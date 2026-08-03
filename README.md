@@ -1,0 +1,224 @@
+# Clinic Case Studies Panel Editor
+
+A companion tool to the [Clinic Pricing Table Editor](../clinic-pricing-editor), same
+approach, same author, same site. It lets a Squarespace site owner edit a filterable case
+studies / testimonials grid — filter tab labels, every card's content, and the accent
+colors (including each category's badge color) — through a form UI, without hand-editing
+HTML.
+
+It does **not** save anything to Squarespace by itself. It regenerates the code block's
+content and writes it into Squarespace's own CodeMirror editing box for you; you still
+click Squarespace's native **Save** button.
+
+## How it works (same platform lessons as the pricing tool, one new wrinkle)
+
+- Panel data lives as an HTML comment (`CASE_STUDIES_DATA_START` / `_END`), not a
+  `<script type="application/json">` tag — Squarespace disables all custom Code Injection
+  scripts on a page whose code blocks contain a `<script>` tag, and separately locks that
+  block behind a paid-plan notice. A comment triggers neither.
+- The code block's editor is CodeMirror 6, reached the same way as the pricing tool: via
+  `window.top`, reading/writing through `view.contentDOM` +
+  `execCommand('insertText', ...)` rather than CodeMirror's own `dispatch()` (which hung
+  the editor tab when tested against a whole-document replace).
+- **The new wrinkle**: unlike the pricing table, this panel needs real JavaScript on the
+  live site for the filter tabs to do anything when a visitor clicks them. That logic
+  can't live inside the code block (any `<script>` there re-triggers the exact restriction
+  above) — so it lives in this same script instead, running unconditionally on every page
+  as a harmless no-op wherever the panel's markup isn't present. Only Footer Code
+  Injection carries JavaScript at all; the code block itself never does.
+- A small slice of the `<style>` block — the accent color variables, each category's badge
+  colors, and the mobile-default-filter rule — is tool-owned and regenerated on save,
+  because those are derived from your data (filter keys, chosen colors), not just your own
+  static styling. Everything else in `<style>` (fonts, spacing, layout, hover animations)
+  is preserved exactly as written and never touched.
+
+## 1. One-time setup: create the case studies code block
+
+Add a **Code Block** with this structure. Swap in your own header text, fonts, and
+`<style>` details if you like — just keep the container id and the three marker pairs
+exactly as shown: `CASE_STUDIES_GRID_START/END` and `CASE_STUDIES_DATA_START/END` are
+regular HTML comments (`<!-- ... -->`), while `CASE_STUDIES_STYLE_START/END` sits inside
+the `<style>` tag and must use CSS comment syntax instead (`/* ... */`) — `<!-- -->` isn't
+valid CSS and can confuse the stylesheet parser. Never add a `<script>` tag anywhere in
+this block.
+
+```html
+<div id="sqs-clinic-outcomes-section">
+
+  <div class="sqs-co-header">
+    <span class="sqs-co-subtitle">Real Clinic Outcomes</span>
+    <h2 class="sqs-co-title">Trusted by Over 100 Clinic Owners Across UK &amp; Ireland</h2>
+    <p class="sqs-co-desc">Filter by clinic structure to see real transformations and measured commercial results.</p>
+  </div>
+
+  <!-- CASE_STUDIES_GRID_START -->
+  <div class="sqs-co-filter-wrapper">
+    <button class="sqs-co-tab" data-filter="all">All Clinics</button>
+    <button class="sqs-co-tab" data-filter="nurse">Solo Practitioner / Nurse</button>
+  </div>
+  <div class="sqs-co-grid">
+    <div class="sqs-co-card" data-category="nurse">
+      <div class="sqs-co-card-image">
+        <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=800&q=80" alt="Skin by Sarah Connolly">
+        <span class="sqs-co-badge" data-badge-cat="nurse">Nurse-Led Clinic</span>
+      </div>
+      <div class="sqs-co-card-body">
+        <div>
+          <h3 class="sqs-co-card-title">Skin by Sarah Connolly</h3>
+          <div class="sqs-co-card-meta">Co. Galway &bull; Aesthetic Nurse Prescriber</div>
+          <p class="sqs-co-card-text">Solo nurse with a loyal client base but no digital presence.</p>
+        </div>
+        <div class="sqs-co-card-footer">
+          <span class="sqs-co-result">📅</span>
+          <a href="#" class="sqs-co-read-more">Read More</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- CASE_STUDIES_GRID_END -->
+
+</div>
+
+<!-- CASE_STUDIES_DATA_START
+{
+  "accent": "#4A707C",
+  "accentHover": "#3a5a65",
+  "mobileDefaultFilter": "nurse",
+  "filters": [
+    { "key": "all", "label": "All Clinics" },
+    { "key": "nurse", "label": "Solo Practitioner / Nurse", "badgeLabel": "Nurse-Led Clinic", "badgeBg": "#ecfdf5", "badgeText": "#065f46" }
+  ],
+  "cards": [
+    {
+      "category": "nurse",
+      "image": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=800&q=80",
+      "imageAlt": "Skin by Sarah Connolly",
+      "title": "Skin by Sarah Connolly",
+      "meta": "Co. Galway • Aesthetic Nurse Prescriber",
+      "description": "Solo nurse with a loyal client base but no digital presence.",
+      "icon": "📅",
+      "linkText": "Read More",
+      "linkUrl": "#"
+    }
+  ]
+}
+CASE_STUDIES_DATA_END -->
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+  /* CASE_STUDIES_STYLE_START */
+  :root { --csp-accent: #4A707C; --csp-accent-hover: #3a5a65; }
+  .sqs-co-badge[data-badge-cat="nurse"] { background: #ecfdf5; color: #065f46; }
+  @media (max-width: 768px) {
+    .sqs-co-card:not([data-category="nurse"]) { display: none; }
+    .sqs-co-tab[data-filter="nurse"] { background: var(--csp-accent); border-color: var(--csp-accent); color: #ffffff; }
+    .sqs-co-tab[data-filter="all"] { background: transparent; border-color: #d1d5db; color: #6b7280; }
+  }
+  /* CASE_STUDIES_STYLE_END */
+
+  #sqs-clinic-outcomes-section { font-family: 'Plus Jakarta Sans', sans-serif; padding: 80px 40px; background: #ffffff; max-width: 1200px; margin: 0 auto; }
+  .sqs-co-header { text-align: center; margin-bottom: 48px; }
+  .sqs-co-subtitle { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--csp-accent); margin-bottom: 12px; }
+  .sqs-co-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px, 4vw, 44px); font-weight: 700; color: #1a1a2e; margin: 0 0 16px; line-height: 1.2; }
+  .sqs-co-desc { font-size: 16px; color: #6b7280; max-width: 560px; margin: 0 auto; line-height: 1.6; }
+  .sqs-co-filter-wrapper { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 48px; }
+  .sqs-co-tab { padding: 10px 22px; border-radius: 100px; border: 1.5px solid #d1d5db; background: transparent; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 600; color: #6b7280; cursor: pointer; transition: all 0.25s ease; }
+  .sqs-co-tab:hover { border-color: var(--csp-accent); color: var(--csp-accent); }
+  .sqs-co-tab.active { background: var(--csp-accent); border-color: var(--csp-accent); color: #ffffff; }
+  .sqs-co-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 28px; }
+  .sqs-co-card { border-radius: 16px; overflow: hidden; background: #ffffff; border: 1px solid #e5e7eb; box-shadow: 0 2px 12px rgba(0,0,0,0.06); transition: transform 0.25s ease, box-shadow 0.25s ease; display: flex; flex-direction: column; }
+  .sqs-co-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.1); }
+  .sqs-co-card.hidden { display: none; }
+  .sqs-co-card-image { position: relative; height: 200px; overflow: hidden; }
+  .sqs-co-card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+  .sqs-co-card:hover .sqs-co-card-image img { transform: scale(1.04); }
+  .sqs-co-badge { position: absolute; top: 14px; left: 14px; padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+  .sqs-co-card-body { padding: 24px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; gap: 20px; }
+  .sqs-co-card-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 700; color: #1a1a2e; margin: 0 0 6px; }
+  .sqs-co-card-meta { font-size: 12px; color: #9ca3af; font-weight: 500; margin-bottom: 12px; }
+  .sqs-co-card-text { font-size: 14px; color: #4b5563; line-height: 1.65; margin: 0; }
+  .sqs-co-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 16px; border-top: 1px solid #f3f4f6; }
+  .sqs-co-result { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: #edf3f5; color: var(--csp-accent); font-size: 16px; flex-shrink: 0; }
+  .sqs-co-read-more { display: inline-block; padding: 8px 20px; border-radius: 100px; background: var(--csp-accent); color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 600; text-decoration: none; border: none; cursor: pointer; transition: background 0.2s ease, transform 0.2s ease; }
+  .sqs-co-read-more:hover { background: var(--csp-accent-hover); transform: translateY(-1px); }
+  @media (max-width: 768px) {
+    #sqs-clinic-outcomes-section { padding: 60px 20px; }
+    .sqs-co-grid { grid-template-columns: 1fr; }
+    .sqs-co-tab { font-size: 12px; padding: 8px 16px; }
+  }
+</style>
+```
+
+A few things worth noting about this template versus your original code:
+
+- **No Font Awesome `<link>` tag, no `<i class="fa-solid ...">` icons.** Icons are now
+  plain emoji directly in the `.sqs-co-result` span (`📅`, `🩺`, `📈`, whatever fits) —
+  this removes a third-party CDN dependency entirely, matching the security posture of the
+  pricing tool (no assets loaded from any domain but your own GitHub Pages for the tool
+  itself). Pick emoji per card in the editor's "Icon" field.
+- **No filter-wiring `<script>` at the bottom of the block.** That logic now lives in
+  `case-studies-editor.js` itself (loaded via Footer Code Injection) and runs on every
+  page automatically — see "How it works" above for why.
+- **No `.sqs-co-badge-nurse` / `-medical` / `-rebrand` classes.** Badge colors are now
+  driven by `data-badge-cat="KEY"` plus a regenerated CSS rule per filter, so adding a new
+  category and giving it a color happens once, in the editor, rather than needing a new
+  hardcoded CSS class.
+
+## 2. Install the editor script
+
+Go to **Settings → Advanced → Code Injection → Footer** and add this as an *additional*
+line — don't remove anything already there (e.g. the pricing tool's script tag):
+
+```html
+<script src="PASTE_YOUR_HOSTED_URL_HERE/case-studies-editor.js" defer></script>
+```
+
+Save.
+
+## 3. Editing the panel
+
+1. Open the page with the case studies code block in Squarespace's editor.
+2. A red **"✎ Edit Case Studies"** button appears floating near the top right as soon as
+   that block's code editor panel is open (a different color from the pricing tool's
+   button, so you can tell them apart at a glance).
+3. Click it. A form opens with three sections:
+   - **Global Settings**: accent color, accent hover color, and which filter is shown by
+     default on mobile screens.
+   - **Filter Tabs**: the "Show all" tab (label only, always first) plus your real
+     categories — each with a key, a tab label, and its own badge text + colors.
+   - **Case Study Cards**: one entry per card — category, icon, title, meta line, image
+     URL + alt text, description, and the "Read More" button's text and link.
+4. Click **Save Changes**. The tool writes the regenerated code into Squarespace's code
+   editor box and shows a brief confirmation.
+5. **You must still click Squarespace's own native Save button** to publish the change.
+
+If the tool can't reach the code editor directly, it shows the regenerated code with a
+**Copy to Clipboard** button instead — paste that over the existing block content, then
+click Squarespace's Save.
+
+## Notes on card fields
+
+- **Description** is inserted as raw HTML, not escaped, so `<strong>...</strong>` and
+  similar inline markup survive if you type them directly into that field. Title, meta,
+  and image alt text are treated as plain text.
+- **Category** must match one of your filter keys (the dropdown only offers valid ones).
+  Renaming a filter's key automatically updates every card using it.
+- Deleting a filter does **not** delete cards that used it — reassign them to another
+  category in the editor, or the block will fail validation on save until you do.
+
+## Manual test checklist
+
+- [ ] On the **live public page**: filter tabs actually filter cards when clicked, no
+      console errors, and no "Edit Case Studies" button appears.
+- [ ] In the Squarespace editor, opening any **other** page's code block does not show
+      the button.
+- [ ] Opening the case studies block shows the button, and it's clearly a custom tool
+      (red, labelled "Custom tool (not part of Squarespace)").
+- [ ] Editing filters/cards/colors and clicking Save Changes updates the code editor box
+      with correctly regenerated data, the tool-owned style snippet, and grid markup —
+      and your header text, fonts, and layout rules are untouched.
+- [ ] Renaming a filter's key updates every card that referenced it. Deleting a filter
+      used by an existing card blocks saving with a clear validation error.
+- [ ] After a successful save inside the tool, Squarespace's own Save button still has to
+      be clicked to actually publish.
