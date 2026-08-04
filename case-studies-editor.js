@@ -152,6 +152,29 @@
         applyFilter(tab.getAttribute('data-filter'));
       });
     });
+
+    // On mobile, pre-select the configured default filter -- through the
+    // exact same applyFilter() a click would use, so there is only ever one
+    // mechanism controlling which tab looks selected. (An earlier version of
+    // this tool did this with a CSS rule targeting the default tab directly,
+    // which tied in specificity with the .active class rule and could leave
+    // the default tab looking selected even after a different one was
+    // clicked. Routing it through applyFilter() instead makes that class of
+    // bug structurally impossible: whichever tab last called applyFilter is
+    // the only one that can have .active.)
+    var wrapper = doc.querySelector('.sqs-co-filter-wrapper');
+    var mobileDefault = wrapper ? wrapper.getAttribute('data-mobile-default') : null;
+    if (mobileDefault && wrapper.getAttribute('data-csp-default-applied') !== 'true') {
+      var isMobile = false;
+      try {
+        var view = doc.defaultView || (typeof window !== 'undefined' ? window : null);
+        isMobile = !!(view && view.matchMedia && view.matchMedia('(max-width: 768px)').matches);
+      } catch (e) {}
+      if (isMobile) {
+        wrapper.setAttribute('data-csp-default-applied', 'true');
+        applyFilter(mobileDefault);
+      }
+    }
   }
 
   function startLiveFilters() {
@@ -313,7 +336,11 @@
   function buildGridHtml(state) {
     var parts = [];
 
-    parts.push('<div class="sqs-co-filter-wrapper">');
+    // data-mobile-default carries which filter the live page's own script
+    // (see wireLiveFilters near the top of this file) should pre-select on
+    // small screens -- read once at page load, not baked into CSS, so there
+    // is only one code path that can ever mark a tab "selected".
+    parts.push('<div class="sqs-co-filter-wrapper" data-mobile-default="' + escapeHtml(state.mobileDefaultFilter) + '">');
     state.filters.forEach(function (f) {
       parts.push(
         '<button class="sqs-co-tab" data-filter="' + escapeHtml(f.key) + '">' + escapeHtml(f.label) + '</button>'
@@ -366,18 +393,17 @@
       );
     });
 
-    var defaultFilter = state.mobileDefaultFilter;
-    if (defaultFilter && defaultFilter !== ALL_KEY) {
-      parts.push('@media (max-width: 768px) {');
-      parts.push('  .sqs-co-card:not([data-category="' + defaultFilter + '"]) { display: none; }');
-      parts.push(
-        '  .sqs-co-tab[data-filter="' + defaultFilter + '"] { background: var(--csp-accent); border-color: var(--csp-accent); color: #ffffff; }'
-      );
-      parts.push(
-        '  .sqs-co-tab[data-filter="all"] { background: transparent; border-color: #d1d5db; color: #6b7280; }'
-      );
-      parts.push('}');
-    }
+    // Mobile default filtering is applied by wireLiveFilters() at runtime
+    // (via the data-mobile-default attribute on .sqs-co-filter-wrapper),
+    // using the exact same .active/.hidden class toggling a click uses --
+    // deliberately not a CSS rule here. A CSS rule that forces one tab's
+    // colors by its data-filter value ties in specificity with the
+    // .sqs-co-tab.active rule elsewhere in this stylesheet, and CSS breaks
+    // that tie by source order, not by which one is "supposed" to win --
+    // so the default tab could stay visually highlighted after a visitor
+    // picks a different one. Keeping exactly one mechanism (JS toggling
+    // .active) in charge of what "selected" looks like avoids that class of
+    // bug entirely.
 
     return parts.join('\n');
   }

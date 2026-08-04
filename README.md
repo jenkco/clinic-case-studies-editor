@@ -52,7 +52,7 @@ this block.
   </div>
 
   <!-- CASE_STUDIES_GRID_START -->
-  <div class="sqs-co-filter-wrapper">
+  <div class="sqs-co-filter-wrapper" data-mobile-default="nurse">
     <button class="sqs-co-tab" data-filter="all">All Clinics</button>
     <button class="sqs-co-tab" data-filter="nurse">Solo Practitioner / Nurse</button>
   </div>
@@ -110,11 +110,6 @@ CASE_STUDIES_DATA_END -->
   /* CASE_STUDIES_STYLE_START */
   :root { --csp-accent: #4A707C; --csp-accent-hover: #3a5a65; }
   .sqs-co-badge[data-badge-cat="nurse"] { background: #ecfdf5; color: #065f46; }
-  @media (max-width: 768px) {
-    .sqs-co-card:not([data-category="nurse"]) { display: none; }
-    .sqs-co-tab[data-filter="nurse"] { background: var(--csp-accent); border-color: var(--csp-accent); color: #ffffff; }
-    .sqs-co-tab[data-filter="all"] { background: transparent; border-color: #d1d5db; color: #6b7280; }
-  }
   /* CASE_STUDIES_STYLE_END */
 
   #sqs-clinic-outcomes-section { font-family: 'Plus Jakarta Sans', sans-serif; padding: 80px 40px; background: #ffffff; max-width: 1200px; margin: 0 auto; }
@@ -164,6 +159,16 @@ A few things worth noting about this template versus your original code:
   driven by `data-badge-cat="KEY"` plus a regenerated CSS rule per filter, so adding a new
   category and giving it a color happens once, in the editor, rather than needing a new
   hardcoded CSS class.
+- **No CSS media-query rule hardcoding the mobile default filter's look.** Which filter is
+  pre-selected on small screens is carried as a `data-mobile-default="KEY"` attribute on
+  `.sqs-co-filter-wrapper`, read once at page load by the same script that handles clicks.
+  An earlier version of this tool used a CSS rule instead (`.sqs-co-tab[data-filter="X"]`),
+  which ties in specificity with the `.sqs-co-tab.active` rule everything else uses — and
+  when two rules tie, CSS picks whichever comes later in the stylesheet, not whichever one
+  is "supposed" to win. That let the default tab stay visually highlighted after a visitor
+  picked a different one, even though the correct cards were showing underneath. Routing
+  it through the same JS that handles clicks means there's only ever one thing in charge of
+  what "selected" looks like.
 
 ## 2. Install the editor script
 
