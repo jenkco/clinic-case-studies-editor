@@ -105,20 +105,18 @@ this block.
 CASE_STUDIES_DATA_END -->
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
-
   /* CASE_STUDIES_STYLE_START */
   :root { --csp-accent: #4A707C; --csp-accent-hover: #3a5a65; }
   .sqs-co-badge[data-badge-cat="nurse"] { background: #ecfdf5; color: #065f46; }
   /* CASE_STUDIES_STYLE_END */
 
-  #sqs-clinic-outcomes-section { font-family: 'Plus Jakarta Sans', sans-serif; padding: 80px 40px; background: #ffffff; max-width: 1200px; margin: 0 auto; }
+  #sqs-clinic-outcomes-section { font-family: inherit; padding: 80px 40px; background: #ffffff; max-width: 1200px; margin: 0 auto; }
   .sqs-co-header { text-align: center; margin-bottom: 48px; }
   .sqs-co-subtitle { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--csp-accent); margin-bottom: 12px; }
-  .sqs-co-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px, 4vw, 44px); font-weight: 700; color: #1a1a2e; margin: 0 0 16px; line-height: 1.2; }
+  .sqs-co-title { font-family: inherit; font-size: clamp(28px, 4vw, 44px); font-weight: 700; color: #1a1a2e; margin: 0 0 16px; line-height: 1.2; }
   .sqs-co-desc { font-size: 16px; color: #6b7280; max-width: 560px; margin: 0 auto; line-height: 1.6; }
   .sqs-co-filter-wrapper { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 48px; }
-  .sqs-co-tab { padding: 10px 22px; border-radius: 100px; border: 1.5px solid #d1d5db; background: transparent; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 600; color: #6b7280; cursor: pointer; transition: all 0.25s ease; }
+  .sqs-co-tab { padding: 10px 22px; border-radius: 100px; border: 1.5px solid #d1d5db; background: transparent; font-family: inherit; font-size: 13px; font-weight: 600; color: #6b7280; cursor: pointer; transition: all 0.25s ease; }
   .sqs-co-tab:hover { border-color: var(--csp-accent); color: var(--csp-accent); }
   .sqs-co-tab.active { background: var(--csp-accent); border-color: var(--csp-accent); color: #ffffff; }
   .sqs-co-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 28px; }
@@ -130,12 +128,12 @@ CASE_STUDIES_DATA_END -->
   .sqs-co-card:hover .sqs-co-card-image img { transform: scale(1.04); }
   .sqs-co-badge { position: absolute; top: 14px; left: 14px; padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
   .sqs-co-card-body { padding: 24px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; gap: 20px; }
-  .sqs-co-card-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 700; color: #1a1a2e; margin: 0 0 6px; }
+  .sqs-co-card-title { font-family: inherit; font-size: 22px; font-weight: 700; color: #1a1a2e; margin: 0 0 6px; }
   .sqs-co-card-meta { font-size: 12px; color: #9ca3af; font-weight: 500; margin-bottom: 12px; }
   .sqs-co-card-text { font-size: 14px; color: #4b5563; line-height: 1.65; margin: 0; }
   .sqs-co-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 16px; border-top: 1px solid #f3f4f6; }
   .sqs-co-result { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: #edf3f5; color: var(--csp-accent); font-size: 16px; flex-shrink: 0; }
-  .sqs-co-read-more { display: inline-block; padding: 8px 20px; border-radius: 100px; background: var(--csp-accent); color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 600; text-decoration: none; border: none; cursor: pointer; transition: background 0.2s ease, transform 0.2s ease; }
+  .sqs-co-read-more { display: inline-block; padding: 8px 20px; border-radius: 100px; background: var(--csp-accent); color: #ffffff; font-family: inherit; font-size: 13px; font-weight: 600; text-decoration: none; border: none; cursor: pointer; transition: background 0.2s ease, transform 0.2s ease; }
   .sqs-co-read-more:hover { background: var(--csp-accent-hover); transform: translateY(-1px); }
   @media (max-width: 768px) {
     #sqs-clinic-outcomes-section { padding: 60px 20px; }
@@ -147,6 +145,12 @@ CASE_STUDIES_DATA_END -->
 
 A few things worth noting about this template versus your original code:
 
+- **No Google Fonts `@import`, and every `font-family` in the block's own `<style>` is
+  `inherit`.** Headings and body text pick up whatever font the host page already uses,
+  rather than loading Cormorant Garamond / Plus Jakarta Sans from a third-party CDN. Note
+  this is only about the panel's own content — the editor tool's modal (the form you see
+  when you click "Edit Case Studies") keeps its own font stack, since that's UI chrome for
+  you, not part of the page visitors see.
 - **No Font Awesome `<link>` tag, no `<i class="fa-solid ...">` icons.** Icons are now
   plain emoji directly in the `.sqs-co-result` span (`📅`, `🩺`, `📈`, whatever fits) —
   this removes a third-party CDN dependency entirely, matching the security posture of the
