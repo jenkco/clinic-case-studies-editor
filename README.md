@@ -26,11 +26,14 @@ click Squarespace's native **Save** button.
   above) — so it lives in this same script instead, running unconditionally on every page
   as a harmless no-op wherever the panel's markup isn't present. Only Footer Code
   Injection carries JavaScript at all; the code block itself never does.
-- A small slice of the `<style>` block — the accent color variables, each category's badge
-  colors, and the mobile-default-filter rule — is tool-owned and regenerated on save,
-  because those are derived from your data (filter keys, chosen colors), not just your own
-  static styling. Everything else in `<style>` (fonts, spacing, layout, hover animations)
-  is preserved exactly as written and never touched.
+- A small slice of the `<style>` block — the accent color variables and each category's
+  badge colors — is tool-owned and regenerated on save, because those are derived from your
+  data (filter keys, chosen colors), not just your own static styling. Everything else in
+  `<style>` (fonts, spacing, layout, hover animations) is preserved exactly as written and
+  never touched. Which filter is pre-selected on load isn't a CSS rule at all — it's a
+  `data-default-filter` attribute read once by the live page's own script, so it applies
+  consistently on desktop and mobile with only one mechanism ever controlling which tab
+  looks selected.
 
 ## 1. One-time setup: create the case studies code block
 
@@ -52,7 +55,7 @@ this block.
   </div>
 
   <!-- CASE_STUDIES_GRID_START -->
-  <div class="sqs-co-filter-wrapper" data-mobile-default="nurse">
+  <div class="sqs-co-filter-wrapper" data-default-filter="nurse">
     <button class="sqs-co-tab" data-filter="all">All Clinics</button>
     <button class="sqs-co-tab" data-filter="nurse">Solo Practitioner / Nurse</button>
   </div>
@@ -83,7 +86,7 @@ this block.
 {
   "accent": "#4A707C",
   "accentHover": "#3a5a65",
-  "mobileDefaultFilter": "nurse",
+  "defaultFilter": "nurse",
   "filters": [
     { "key": "all", "label": "All Clinics" },
     { "key": "nurse", "label": "Solo Practitioner / Nurse", "badgeLabel": "Nurse-Led Clinic", "badgeBg": "#ecfdf5", "badgeText": "#065f46" }
@@ -163,16 +166,21 @@ A few things worth noting about this template versus your original code:
   driven by `data-badge-cat="KEY"` plus a regenerated CSS rule per filter, so adding a new
   category and giving it a color happens once, in the editor, rather than needing a new
   hardcoded CSS class.
-- **No CSS media-query rule hardcoding the mobile default filter's look.** Which filter is
-  pre-selected on small screens is carried as a `data-mobile-default="KEY"` attribute on
-  `.sqs-co-filter-wrapper`, read once at page load by the same script that handles clicks.
-  An earlier version of this tool used a CSS rule instead (`.sqs-co-tab[data-filter="X"]`),
-  which ties in specificity with the `.sqs-co-tab.active` rule everything else uses — and
-  when two rules tie, CSS picks whichever comes later in the stylesheet, not whichever one
-  is "supposed" to win. That let the default tab stay visually highlighted after a visitor
-  picked a different one, even though the correct cards were showing underneath. Routing
-  it through the same JS that handles clicks means there's only ever one thing in charge of
-  what "selected" looks like.
+- **No CSS rule hardcoding the default filter's look.** Which filter is pre-selected on
+  load — on both desktop and mobile — is carried as a `data-default-filter="KEY"` attribute
+  on `.sqs-co-filter-wrapper`, read once at page load by the same script that handles
+  clicks. An earlier version of this tool used a CSS media-query rule instead
+  (`.sqs-co-tab[data-filter="X"]`), which ties in specificity with the `.sqs-co-tab.active`
+  rule everything else uses — and when two rules tie, CSS picks whichever comes later in
+  the stylesheet, not whichever one is "supposed" to win. That let the default tab stay
+  visually highlighted after a visitor picked a different one, even though the correct
+  cards were showing underneath. Routing it through the same JS that handles clicks means
+  there's only ever one thing in charge of what "selected" looks like.
+- **The grid itself already resizes for whatever's showing.** Filtering works by putting
+  `display: none` on non-matching cards, which removes them from layout entirely — the
+  CSS grid reflows the remaining cards and the section's height shrinks to fit, with no
+  fixed height or `min-height` anywhere holding old empty space open. No extra work needed
+  here; it falls out of how the filtering was already built.
 
 ## 2. Install the editor script
 
@@ -193,7 +201,7 @@ Save.
    button, so you can tell them apart at a glance).
 3. Click it. A form opens with three sections:
    - **Global Settings**: accent color, accent hover color, and which filter is shown by
-     default on mobile screens.
+     default on page load (desktop and mobile both).
    - **Filter Tabs**: the "Show all" tab (label only, always first) plus your real
      categories — each with a key, a tab label, and its own badge text + colors.
    - **Case Study Cards**: one entry per card — category, icon, title, meta line, image

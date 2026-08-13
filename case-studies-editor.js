@@ -48,12 +48,12 @@
  *
  * Unlike the pricing tool, this one actually writes color values back (the
  * accent colors and each category's badge colors), not just reads them, and
- * a small slice of the <style> block (CSS custom properties, badge color
- * rules, and the mobile-default-filter rule) is regenerated alongside the
- * data and grid markup -- because those rules are derived from the data
- * (filter keys, badge colors) rather than being purely the site owner's own
- * static styling. Everything else in the <style> block (fonts, spacing,
- * layout, hover animations) is never touched.
+ * a small slice of the <style> block (CSS custom properties and badge color
+ * rules) is regenerated alongside the data and grid markup -- because those
+ * rules are derived from the data (filter keys, badge colors) rather than
+ * being purely the site owner's own static styling. Everything else in the
+ * <style> block (fonts, spacing, layout, hover animations) is never
+ * touched.
  *
  * IMPORTANT: This script cannot save anything to Squarespace by itself.
  * After using it, the site owner must still click Squarespace's own native
@@ -153,27 +153,21 @@
       });
     });
 
-    // On mobile, pre-select the configured default filter -- through the
-    // exact same applyFilter() a click would use, so there is only ever one
-    // mechanism controlling which tab looks selected. (An earlier version of
-    // this tool did this with a CSS rule targeting the default tab directly,
-    // which tied in specificity with the .active class rule and could leave
-    // the default tab looking selected even after a different one was
-    // clicked. Routing it through applyFilter() instead makes that class of
-    // bug structurally impossible: whichever tab last called applyFilter is
-    // the only one that can have .active.)
+    // Pre-select the configured default filter on load, on every screen
+    // size -- through the exact same applyFilter() a click would use, so
+    // there is only ever one mechanism controlling which tab looks
+    // selected. (An earlier version of this tool did this with a CSS rule
+    // targeting the default tab directly, which tied in specificity with
+    // the .active class rule and could leave the default tab looking
+    // selected even after a different one was clicked. Routing it through
+    // applyFilter() instead makes that class of bug structurally
+    // impossible: whichever tab last called applyFilter is the only one
+    // that can have .active.)
     var wrapper = doc.querySelector('.sqs-co-filter-wrapper');
-    var mobileDefault = wrapper ? wrapper.getAttribute('data-mobile-default') : null;
-    if (mobileDefault && wrapper.getAttribute('data-csp-default-applied') !== 'true') {
-      var isMobile = false;
-      try {
-        var view = doc.defaultView || (typeof window !== 'undefined' ? window : null);
-        isMobile = !!(view && view.matchMedia && view.matchMedia('(max-width: 768px)').matches);
-      } catch (e) {}
-      if (isMobile) {
-        wrapper.setAttribute('data-csp-default-applied', 'true');
-        applyFilter(mobileDefault);
-      }
+    var defaultFilter = wrapper ? wrapper.getAttribute('data-default-filter') : null;
+    if (defaultFilter && wrapper.getAttribute('data-csp-default-applied') !== 'true') {
+      wrapper.setAttribute('data-csp-default-applied', 'true');
+      applyFilter(defaultFilter);
     }
   }
 
@@ -336,11 +330,12 @@
   function buildGridHtml(state) {
     var parts = [];
 
-    // data-mobile-default carries which filter the live page's own script
+    // data-default-filter carries which filter the live page's own script
     // (see wireLiveFilters near the top of this file) should pre-select on
-    // small screens -- read once at page load, not baked into CSS, so there
-    // is only one code path that can ever mark a tab "selected".
-    parts.push('<div class="sqs-co-filter-wrapper" data-mobile-default="' + escapeHtml(state.mobileDefaultFilter) + '">');
+    // load, on every screen size -- read once at page load, not baked into
+    // CSS, so there is only one code path that can ever mark a tab
+    // "selected".
+    parts.push('<div class="sqs-co-filter-wrapper" data-default-filter="' + escapeHtml(state.defaultFilter) + '">');
     state.filters.forEach(function (f) {
       parts.push(
         '<button class="sqs-co-tab" data-filter="' + escapeHtml(f.key) + '">' + escapeHtml(f.label) + '</button>'
@@ -393,9 +388,10 @@
       );
     });
 
-    // Mobile default filtering is applied by wireLiveFilters() at runtime
-    // (via the data-mobile-default attribute on .sqs-co-filter-wrapper),
-    // using the exact same .active/.hidden class toggling a click uses --
+    // Default filtering (desktop and mobile) is applied by wireLiveFilters()
+    // at runtime (via the data-default-filter attribute on
+    // .sqs-co-filter-wrapper), using the exact same .active/.hidden class
+    // toggling a click uses --
     // deliberately not a CSS rule here. A CSS rule that forces one tab's
     // colors by its data-filter value ties in specificity with the
     // .sqs-co-tab.active rule elsewhere in this stylesheet, and CSS breaks
@@ -577,29 +573,29 @@
     globalRow.appendChild(colorField('Accent Color', 'accent'));
     globalRow.appendChild(colorField('Accent Hover Color', 'accentHover'));
 
-    var mobileLabel = D.createElement('label');
-    mobileLabel.className = 'csp-field-label';
-    mobileLabel.textContent = 'Mobile Default Filter';
-    var mobileSelect = D.createElement('select');
-    mobileSelect.className = 'csp-select';
-    function renderMobileOptions() {
-      mobileSelect.innerHTML = '';
+    var defaultFilterLabel = D.createElement('label');
+    defaultFilterLabel.className = 'csp-field-label';
+    defaultFilterLabel.textContent = 'Default Filter (Desktop & Mobile)';
+    var defaultFilterSelect = D.createElement('select');
+    defaultFilterSelect.className = 'csp-select';
+    function renderDefaultFilterOptions() {
+      defaultFilterSelect.innerHTML = '';
       state.filters
         .filter(function (f) { return f.key !== ALL_KEY; })
         .forEach(function (f) {
           var opt = D.createElement('option');
           opt.value = f.key;
           opt.textContent = f.label;
-          if (f.key === state.mobileDefaultFilter) opt.selected = true;
-          mobileSelect.appendChild(opt);
+          if (f.key === state.defaultFilter) opt.selected = true;
+          defaultFilterSelect.appendChild(opt);
         });
     }
-    renderMobileOptions();
-    mobileSelect.addEventListener('change', function () {
-      state.mobileDefaultFilter = mobileSelect.value;
+    renderDefaultFilterOptions();
+    defaultFilterSelect.addEventListener('change', function () {
+      state.defaultFilter = defaultFilterSelect.value;
     });
-    mobileLabel.appendChild(mobileSelect);
-    globalRow.appendChild(mobileLabel);
+    defaultFilterLabel.appendChild(defaultFilterSelect);
+    globalRow.appendChild(defaultFilterLabel);
 
     globalSection.appendChild(globalRow);
     body.appendChild(globalSection);
@@ -646,7 +642,7 @@
       state.filters.forEach(function (f, idx) {
         filtersWrap.appendChild(renderFilterCard(f, idx));
       });
-      renderMobileOptions();
+      renderDefaultFilterOptions();
       renderCards();
     }
 
@@ -692,7 +688,7 @@
         state.cards.forEach(function (c) {
           if (c.category === oldKey) c.category = f.key;
         });
-        if (state.mobileDefaultFilter === oldKey) state.mobileDefaultFilter = f.key;
+        if (state.defaultFilter === oldKey) state.defaultFilter = f.key;
       });
       keyLabel.appendChild(keyInput);
       grid.appendChild(keyLabel);
@@ -989,8 +985,8 @@
       }
     });
 
-    if (!filterByKey(state, state.mobileDefaultFilter) || state.mobileDefaultFilter === ALL_KEY) {
-      errors.push('Mobile default filter must reference one of the real filters (not "Show all").');
+    if (!filterByKey(state, state.defaultFilter) || state.defaultFilter === ALL_KEY) {
+      errors.push('Default filter must reference one of the real filters (not "Show all").');
     }
 
     state.cards.forEach(function (c, idx) {
