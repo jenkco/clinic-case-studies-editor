@@ -67,12 +67,13 @@ this block.
       </div>
       <div class="sqs-co-card-body">
         <div>
-          <h3 class="sqs-co-card-title">Skin by Sarah Connolly</h3>
-          <div class="sqs-co-card-meta">Co. Galway &bull; Aesthetic Nurse Prescriber</div>
+          <h3 class="sqs-co-card-title">Sarah Connolly</h3>
+          <div class="sqs-co-card-jobtitle">Aesthetic Nurse Prescriber</div>
+          <div class="sqs-co-card-meta">Skin by Sarah Connolly</div>
           <p class="sqs-co-card-text">Solo nurse with a loyal client base but no digital presence.</p>
         </div>
         <div class="sqs-co-card-footer">
-          <span class="sqs-co-result">📅</span>
+          <span class="sqs-co-result"><img src="https://example.com/logos/skin-by-sarah-connolly.png" alt="Skin by Sarah Connolly logo"></span>
           <a href="#" class="sqs-co-read-more">Read More</a>
         </div>
       </div>
@@ -96,10 +97,11 @@ this block.
       "category": "nurse",
       "image": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=800&q=80",
       "imageAlt": "Skin by Sarah Connolly",
-      "title": "Skin by Sarah Connolly",
-      "meta": "Co. Galway • Aesthetic Nurse Prescriber",
+      "title": "Sarah Connolly",
+      "jobTitle": "Aesthetic Nurse Prescriber",
+      "meta": "Skin by Sarah Connolly",
       "description": "Solo nurse with a loyal client base but no digital presence.",
-      "icon": "📅",
+      "logo": "https://example.com/logos/skin-by-sarah-connolly.png",
       "linkText": "Read More",
       "linkUrl": "#"
     }
@@ -131,11 +133,13 @@ CASE_STUDIES_DATA_END -->
   .sqs-co-card:hover .sqs-co-card-image img { transform: scale(1.04); }
   .sqs-co-badge { position: absolute; top: 14px; left: 14px; padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
   .sqs-co-card-body { padding: 24px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; gap: 20px; }
-  .sqs-co-card-title { font-family: inherit; font-size: 22px; font-weight: 700; color: #1a1a2e; margin: 0 0 6px; }
+  .sqs-co-card-title { font-family: inherit; font-size: 22px; font-weight: 700; color: #1a1a2e; margin: 0 0 4px; }
+  .sqs-co-card-jobtitle { font-size: 13px; color: #6b7280; font-weight: 500; margin-bottom: 4px; }
   .sqs-co-card-meta { font-size: 12px; color: #9ca3af; font-weight: 500; margin-bottom: 12px; }
   .sqs-co-card-text { font-size: 14px; color: #4b5563; line-height: 1.65; margin: 0; }
   .sqs-co-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 16px; border-top: 1px solid #f3f4f6; }
-  .sqs-co-result { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: #edf3f5; color: var(--csp-accent); font-size: 16px; flex-shrink: 0; }
+  .sqs-co-result { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: #edf3f5; overflow: hidden; flex-shrink: 0; }
+  .sqs-co-result img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
   .sqs-co-read-more { display: inline-block; padding: 8px 20px; border-radius: 100px; background: var(--csp-accent); color: #ffffff; font-family: inherit; font-size: 13px; font-weight: 600; text-decoration: none; border: none; cursor: pointer; transition: background 0.2s ease, transform 0.2s ease; }
   .sqs-co-read-more:hover { background: var(--csp-accent-hover); transform: translateY(-1px); }
   @media (max-width: 768px) {
@@ -154,11 +158,12 @@ A few things worth noting about this template versus your original code:
   this is only about the panel's own content — the editor tool's modal (the form you see
   when you click "Edit Case Studies") keeps its own font stack, since that's UI chrome for
   you, not part of the page visitors see.
-- **No Font Awesome `<link>` tag, no `<i class="fa-solid ...">` icons.** Icons are now
-  plain emoji directly in the `.sqs-co-result` span (`📅`, `🩺`, `📈`, whatever fits) —
-  this removes a third-party CDN dependency entirely, matching the security posture of the
-  pricing tool (no assets loaded from any domain but your own GitHub Pages for the tool
-  itself). Pick emoji per card in the editor's "Icon" field.
+- **No Font Awesome `<link>` tag, no `<i class="fa-solid ...">` icons.** The small round
+  badge in each card's footer (`.sqs-co-result`) holds a client/business **logo image**
+  (a URL you supply per card, in the editor's "Logo Image URL" field) rather than an icon
+  font or emoji — this still removes any third-party icon CDN dependency, matching the
+  security posture of the pricing tool (no assets loaded from any domain but your own
+  GitHub Pages for the tool itself, plus wherever you host your logo images).
 - **No filter-wiring `<script>` at the bottom of the block.** That logic now lives in
   `case-studies-editor.js` itself (loaded via Footer Code Injection) and runs on every
   page automatically — see "How it works" above for why.
@@ -204,8 +209,9 @@ Save.
      default on page load (desktop and mobile both).
    - **Filter Tabs**: the "Show all" tab (label only, always first) plus your real
      categories — each with a key, a tab label, and its own badge text + colors.
-   - **Case Study Cards**: one entry per card — category, icon, title, meta line, image
-     URL + alt text, description, and the "Read More" button's text and link.
+   - **Case Study Cards**: one entry per card — category, name, job title, business name,
+     logo image URL, image URL + alt text, description, and the "Read More" button's text
+     and link.
 4. Click **Save Changes**. The tool writes the regenerated code into Squarespace's code
    editor box and shows a brief confirmation.
 5. **You must still click Squarespace's own native Save button** to publish the change.
@@ -216,9 +222,16 @@ click Squarespace's Save.
 
 ## Notes on card fields
 
+- Each card shows three lines above the description: **Name** (the person), **Job Title**
+  (their role), and **Business Name** (their clinic/company) — stored as `title`,
+  `jobTitle`, and `meta` respectively in the data JSON, for backward compatibility with
+  the field names the tool has always used internally.
+- **Logo Image URL** (stored as `logo`) is the small round image in the card's footer —
+  point it at a hosted business/client logo. If a card predates this field (or you leave
+  it blank), the circle just shows its background color with no image.
 - **Description** is inserted as raw HTML, not escaped, so `<strong>...</strong>` and
-  similar inline markup survive if you type them directly into that field. Title, meta,
-  and image alt text are treated as plain text.
+  similar inline markup survive if you type them directly into that field. Name, job
+  title, business name, and image alt text are treated as plain text.
 - **Category** must match one of your filter keys (the dropdown only offers valid ones).
   Renaming a filter's key automatically updates every card using it.
 - Deleting a filter does **not** delete cards that used it — reassign them to another

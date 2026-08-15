@@ -358,12 +358,15 @@
       parts.push('<div class="sqs-co-card-body">');
       parts.push('<div>');
       parts.push('<h3 class="sqs-co-card-title">' + escapeHtml(card.title) + '</h3>');
+      parts.push('<div class="sqs-co-card-jobtitle">' + escapeHtml(card.jobTitle || '') + '</div>');
       parts.push('<div class="sqs-co-card-meta">' + escapeHtml(card.meta) + '</div>');
       // description is inserted raw (not escaped) so inline markup like <strong> survives.
       parts.push('<p class="sqs-co-card-text">' + card.description + '</p>');
       parts.push('</div>');
       parts.push('<div class="sqs-co-card-footer">');
-      parts.push('<span class="sqs-co-result">' + escapeHtml(card.icon) + '</span>');
+      parts.push(
+        '<span class="sqs-co-result"><img src="' + escapeHtml(card.logo || '') + '" alt="' + escapeHtml(card.meta) + ' logo"></span>'
+      );
       parts.push(
         '<a href="' + escapeHtml(card.linkUrl) + '" class="sqs-co-read-more">' + escapeHtml(card.linkText) + '</a>'
       );
@@ -797,9 +800,10 @@
         image: '',
         imageAlt: '',
         title: 'New Case Study',
+        jobTitle: '',
         meta: '',
         description: '',
-        icon: '📈',
+        logo: '',
         linkText: 'Read More',
         linkUrl: '#'
       });
@@ -872,7 +876,7 @@
         var input = D.createElement('input');
         input.type = 'text';
         input.className = 'csp-input csp-input--wide';
-        input.value = c[key];
+        input.value = c[key] || '';
         input.addEventListener('input', function () {
           c[key] = input.value;
         });
@@ -880,9 +884,10 @@
         return label;
       }
 
-      grid.appendChild(textField('Icon (emoji)', 'icon'));
-      grid.appendChild(textField('Title', 'title'));
-      grid.appendChild(textField('Meta line', 'meta'));
+      grid.appendChild(textField('Name', 'title'));
+      grid.appendChild(textField('Job Title', 'jobTitle'));
+      grid.appendChild(textField('Business Name', 'meta'));
+      grid.appendChild(textField('Logo Image URL', 'logo', true));
       grid.appendChild(textField('Image URL', 'image', true));
       grid.appendChild(textField('Image alt text', 'imageAlt', true));
 
