@@ -364,8 +364,13 @@
       parts.push('<p class="sqs-co-card-text">' + card.description + '</p>');
       parts.push('</div>');
       parts.push('<div class="sqs-co-card-footer">');
+      // An empty src attribute makes browsers re-request the current page as
+      // an image (a real HTML quirk), producing a broken-image glyph -- so
+      // the <img> is only emitted when a logo URL is actually set.
       parts.push(
-        '<span class="sqs-co-result"><img src="' + escapeHtml(card.logo || '') + '" alt="' + escapeHtml(card.meta) + ' logo"></span>'
+        '<span class="sqs-co-result">' +
+          (card.logo ? '<img src="' + escapeHtml(card.logo) + '" alt="' + escapeHtml(card.meta) + ' logo">' : '') +
+          '</span>'
       );
       parts.push(
         '<a href="' + escapeHtml(card.linkUrl) + '" class="sqs-co-read-more">' + escapeHtml(card.linkText) + '</a>'
