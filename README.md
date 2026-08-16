@@ -137,8 +137,8 @@ CASE_STUDIES_DATA_END -->
   .sqs-co-card:hover .sqs-co-card-image img { transform: scale(1.04); }
   .sqs-co-badge { position: absolute; top: 14px; left: 14px; padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
   .sqs-co-card-body { padding: 24px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; gap: 20px; }
-  .sqs-co-card-meta { font-size: 24px; color: var(--csp-accent); font-weight: 700; text-align: center; margin: 0 0 6px; }
-  .sqs-co-card-title { font-family: inherit; font-size: 16px; font-weight: 600; color: #1a1a2e; margin: 0 0 4px; }
+  .sqs-co-card-meta { font-size: 21px; color: var(--csp-accent); font-weight: 700; text-align: center; margin: 0 0 14px; }
+  .sqs-co-card-title { font-family: inherit; font-size: 18px; font-weight: 600; color: #1a1a2e; margin: 0 0 4px; }
   .sqs-co-card-jobtitle { font-size: 13px; color: #6b7280; font-weight: 500; margin-bottom: 4px; }
   .sqs-co-card-text { font-size: 14px; color: #4b5563; line-height: 1.65; margin: 0; }
   .sqs-co-card-footer { display: flex; flex-direction: column; gap: 10px; }
