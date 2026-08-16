@@ -357,13 +357,17 @@
       parts.push('</div>');
       parts.push('<div class="sqs-co-card-body">');
       parts.push('<div>');
+      parts.push('<div class="sqs-co-card-meta">' + escapeHtml(card.meta) + '</div>');
       parts.push('<h3 class="sqs-co-card-title">' + escapeHtml(card.title) + '</h3>');
       parts.push('<div class="sqs-co-card-jobtitle">' + escapeHtml(card.jobTitle || '') + '</div>');
-      parts.push('<div class="sqs-co-card-meta">' + escapeHtml(card.meta) + '</div>');
       // description is inserted raw (not escaped) so inline markup like <strong> survives.
       parts.push('<p class="sqs-co-card-text">' + card.description + '</p>');
       parts.push('</div>');
       parts.push('<div class="sqs-co-card-footer">');
+      if (card.location) {
+        parts.push('<div class="sqs-co-card-location">' + escapeHtml(card.location) + '</div>');
+      }
+      parts.push('<div class="sqs-co-card-footer-row">');
       // An empty src attribute makes browsers re-request the current page as
       // an image (a real HTML quirk), producing a broken-image glyph -- so
       // the <img> is only emitted when a logo URL is actually set.
@@ -375,6 +379,7 @@
       parts.push(
         '<a href="' + escapeHtml(card.linkUrl) + '" class="sqs-co-read-more">' + escapeHtml(card.linkText) + '</a>'
       );
+      parts.push('</div>');
       parts.push('</div></div></div>');
     });
     parts.push('</div>');
@@ -807,6 +812,7 @@
         title: 'New Case Study',
         jobTitle: '',
         meta: '',
+        location: '',
         description: '',
         logo: '',
         linkText: 'Read More',
@@ -892,6 +898,7 @@
       grid.appendChild(textField('Name', 'title'));
       grid.appendChild(textField('Job Title', 'jobTitle'));
       grid.appendChild(textField('Business Name', 'meta'));
+      grid.appendChild(textField('Location', 'location'));
       grid.appendChild(textField('Logo Image URL', 'logo', true));
       grid.appendChild(textField('Image URL', 'image', true));
       grid.appendChild(textField('Image alt text', 'imageAlt', true));

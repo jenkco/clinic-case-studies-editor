@@ -67,14 +67,17 @@ this block.
       </div>
       <div class="sqs-co-card-body">
         <div>
+          <div class="sqs-co-card-meta">Skin by Sarah Connolly</div>
           <h3 class="sqs-co-card-title">Sarah Connolly</h3>
           <div class="sqs-co-card-jobtitle">Aesthetic Nurse Prescriber</div>
-          <div class="sqs-co-card-meta">Skin by Sarah Connolly</div>
           <p class="sqs-co-card-text">Solo nurse with a loyal client base but no digital presence.</p>
         </div>
         <div class="sqs-co-card-footer">
-          <span class="sqs-co-result"><img src="https://example.com/logos/skin-by-sarah-connolly.png" alt="Skin by Sarah Connolly logo"></span>
-          <a href="#" class="sqs-co-read-more">Read More</a>
+          <div class="sqs-co-card-location">Ireland</div>
+          <div class="sqs-co-card-footer-row">
+            <span class="sqs-co-result"><img src="https://example.com/logos/skin-by-sarah-connolly.png" alt="Skin by Sarah Connolly logo"></span>
+            <a href="#" class="sqs-co-read-more">Read More</a>
+          </div>
         </div>
       </div>
     </div>
@@ -100,6 +103,7 @@ this block.
       "title": "Sarah Connolly",
       "jobTitle": "Aesthetic Nurse Prescriber",
       "meta": "Skin by Sarah Connolly",
+      "location": "Ireland",
       "description": "Solo nurse with a loyal client base but no digital presence.",
       "logo": "https://example.com/logos/skin-by-sarah-connolly.png",
       "linkText": "Read More",
@@ -133,11 +137,13 @@ CASE_STUDIES_DATA_END -->
   .sqs-co-card:hover .sqs-co-card-image img { transform: scale(1.04); }
   .sqs-co-badge { position: absolute; top: 14px; left: 14px; padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
   .sqs-co-card-body { padding: 24px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; gap: 20px; }
+  .sqs-co-card-meta { font-size: 16px; color: #1a1a2e; font-weight: 600; text-align: center; margin: 0 0 6px; }
   .sqs-co-card-title { font-family: inherit; font-size: 22px; font-weight: 700; color: #1a1a2e; margin: 0 0 4px; }
   .sqs-co-card-jobtitle { font-size: 13px; color: #6b7280; font-weight: 500; margin-bottom: 4px; }
-  .sqs-co-card-meta { font-size: 12px; color: #9ca3af; font-weight: 500; margin-bottom: 12px; }
   .sqs-co-card-text { font-size: 14px; color: #4b5563; line-height: 1.65; margin: 0; }
-  .sqs-co-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 16px; border-top: 1px solid #f3f4f6; }
+  .sqs-co-card-footer { display: flex; flex-direction: column; gap: 10px; }
+  .sqs-co-card-location { font-size: 12px; color: #9ca3af; font-weight: 500; }
+  .sqs-co-card-footer-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 16px; border-top: 1px solid #f3f4f6; }
   .sqs-co-result { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: #edf3f5; overflow: hidden; flex-shrink: 0; }
   .sqs-co-result img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
   .sqs-co-read-more { display: inline-block; padding: 8px 20px; border-radius: 100px; background: var(--csp-accent); color: #ffffff; font-family: inherit; font-size: 13px; font-weight: 600; text-decoration: none; border: none; cursor: pointer; transition: background 0.2s ease, transform 0.2s ease; }
@@ -210,8 +216,8 @@ Save.
    - **Filter Tabs**: the "Show all" tab (label only, always first) plus your real
      categories — each with a key, a tab label, and its own badge text + colors.
    - **Case Study Cards**: one entry per card — category, name, job title, business name,
-     logo image URL, image URL + alt text, description, and the "Read More" button's text
-     and link.
+     location, logo image URL, image URL + alt text, description, and the "Read More"
+     button's text and link.
 4. Click **Save Changes**. The tool writes the regenerated code into Squarespace's code
    editor box and shows a brief confirmation.
 5. **You must still click Squarespace's own native Save button** to publish the change.
@@ -222,10 +228,13 @@ click Squarespace's Save.
 
 ## Notes on card fields
 
-- Each card shows three lines above the description: **Name** (the person), **Job Title**
-  (their role), and **Business Name** (their clinic/company) — stored as `title`,
-  `jobTitle`, and `meta` respectively in the data JSON, for backward compatibility with
-  the field names the tool has always used internally.
+- Each card shows, in order below the photo: **Business Name** (centered, larger, dark
+  text), the person's **Name**, and their **Job Title** — stored as `meta`, `title`, and
+  `jobTitle` respectively in the data JSON, for backward compatibility with the field
+  names the tool has always used internally.
+- **Location** (stored as `location`) shows in the card's footer, above the divider line
+  that separates it from the logo/"Read More" row. Leave it blank to omit that line
+  entirely.
 - **Logo Image URL** (stored as `logo`) is the small round image in the card's footer —
   point it at a hosted business/client logo. If a card predates this field (or you leave
   it blank), the circle just shows its background color with no image.
