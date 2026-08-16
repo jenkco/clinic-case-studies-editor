@@ -139,10 +139,10 @@ CASE_STUDIES_DATA_END -->
   .sqs-co-card-body { padding: 24px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; gap: 20px; }
   .sqs-co-card-meta { font-size: 21px; color: var(--csp-accent); font-weight: 700; text-align: center; margin: 0 0 14px; }
   .sqs-co-card-title { font-family: inherit; font-size: 18px; font-weight: 600; color: #1a1a2e; margin: 0 0 4px; }
-  .sqs-co-card-jobtitle { font-size: 13px; color: #6b7280; font-weight: 500; margin-bottom: 4px; }
+  .sqs-co-card-jobtitle { font-size: 13px; color: #6b7280; font-weight: 500; margin-bottom: 20px; }
   .sqs-co-card-text { font-size: 14px; color: #4b5563; line-height: 1.65; margin: 0; }
   .sqs-co-card-footer { display: flex; flex-direction: column; gap: 10px; }
-  .sqs-co-card-location { font-size: 12px; color: #9ca3af; font-weight: 500; }
+  .sqs-co-card-location { font-size: 14px; color: #9ca3af; font-weight: 500; }
   .sqs-co-card-footer-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 16px; border-top: 1px solid #f3f4f6; }
   .sqs-co-result { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: #edf3f5; overflow: hidden; flex-shrink: 0; }
   .sqs-co-result img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
