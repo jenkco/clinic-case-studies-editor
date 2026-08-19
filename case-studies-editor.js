@@ -368,14 +368,6 @@
         parts.push('<div class="sqs-co-card-location">' + escapeHtml(card.location) + '</div>');
       }
       parts.push('<div class="sqs-co-card-footer-row">');
-      // An empty src attribute makes browsers re-request the current page as
-      // an image (a real HTML quirk), producing a broken-image glyph -- so
-      // the <img> is only emitted when a logo URL is actually set.
-      parts.push(
-        '<span class="sqs-co-result">' +
-          (card.logo ? '<img src="' + escapeHtml(card.logo) + '" alt="' + escapeHtml(card.meta) + ' logo">' : '') +
-          '</span>'
-      );
       parts.push(
         '<a href="' + escapeHtml(card.linkUrl) + '" class="sqs-co-read-more">' + escapeHtml(card.linkText) + '</a>'
       );
@@ -814,7 +806,6 @@
         meta: '',
         location: '',
         description: '',
-        logo: '',
         linkText: 'Read More',
         linkUrl: '#'
       });
@@ -899,7 +890,6 @@
       grid.appendChild(textField('Job Title', 'jobTitle'));
       grid.appendChild(textField('Business Name', 'meta'));
       grid.appendChild(textField('Location', 'location'));
-      grid.appendChild(textField('Logo Image URL', 'logo', true));
       grid.appendChild(textField('Image URL', 'image', true));
       grid.appendChild(textField('Image alt text', 'imageAlt', true));
 

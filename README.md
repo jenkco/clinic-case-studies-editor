@@ -75,7 +75,6 @@ this block.
         <div class="sqs-co-card-footer">
           <div class="sqs-co-card-location">Ireland</div>
           <div class="sqs-co-card-footer-row">
-            <span class="sqs-co-result"><img src="https://example.com/logos/skin-by-sarah-connolly.png" alt="Skin by Sarah Connolly logo"></span>
             <a href="#" class="sqs-co-read-more">Read More</a>
           </div>
         </div>
@@ -105,7 +104,6 @@ this block.
       "meta": "Skin by Sarah Connolly",
       "location": "Ireland",
       "description": "Solo nurse with a loyal client base but no digital presence.",
-      "logo": "https://example.com/logos/skin-by-sarah-connolly.png",
       "linkText": "Read More",
       "linkUrl": "#"
     }
@@ -143,9 +141,7 @@ CASE_STUDIES_DATA_END -->
   .sqs-co-card-text { font-size: 14px; color: #4b5563; line-height: 1.65; margin: 0; }
   .sqs-co-card-footer { display: flex; flex-direction: column; gap: 10px; }
   .sqs-co-card-location { font-size: 14px; color: #9ca3af; font-weight: 500; }
-  .sqs-co-card-footer-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 16px; border-top: 1px solid #f3f4f6; }
-  .sqs-co-result { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: #edf3f5; overflow: hidden; flex-shrink: 0; }
-  .sqs-co-result img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+  .sqs-co-card-footer-row { display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid #f3f4f6; }
   .sqs-co-read-more { display: inline-block; padding: 8px 20px; border-radius: 100px; background: var(--csp-accent); color: #ffffff; font-family: inherit; font-size: 13px; font-weight: 600; text-decoration: none; border: none; cursor: pointer; transition: background 0.2s ease, transform 0.2s ease; }
   .sqs-co-read-more:hover { background: var(--csp-accent-hover); transform: translateY(-1px); }
   @media (max-width: 768px) {
@@ -164,12 +160,12 @@ A few things worth noting about this template versus your original code:
   this is only about the panel's own content — the editor tool's modal (the form you see
   when you click "Edit Case Studies") keeps its own font stack, since that's UI chrome for
   you, not part of the page visitors see.
-- **No Font Awesome `<link>` tag, no `<i class="fa-solid ...">` icons.** The small round
-  badge in each card's footer (`.sqs-co-result`) holds a client/business **logo image**
-  (a URL you supply per card, in the editor's "Logo Image URL" field) rather than an icon
-  font or emoji — this still removes any third-party icon CDN dependency, matching the
+- **No Font Awesome `<link>` tag, no `<i class="fa-solid ...">` icons, and no icon/logo
+  badge in the card footer at all.** Earlier versions had one (first a single emoji, then
+  a business logo image); both were removed. The footer now holds only the "Read More"
+  link, right-aligned — this removes any third-party icon CDN dependency, matching the
   security posture of the pricing tool (no assets loaded from any domain but your own
-  GitHub Pages for the tool itself, plus wherever you host your logo images).
+  GitHub Pages for the tool itself).
 - **No filter-wiring `<script>` at the bottom of the block.** That logic now lives in
   `case-studies-editor.js` itself (loaded via Footer Code Injection) and runs on every
   page automatically — see "How it works" above for why.
@@ -216,8 +212,8 @@ Save.
    - **Filter Tabs**: the "Show all" tab (label only, always first) plus your real
      categories — each with a key, a tab label, and its own badge text + colors.
    - **Case Study Cards**: one entry per card — category, name, job title, business name,
-     location, logo image URL, image URL + alt text, description, and the "Read More"
-     button's text and link.
+     location, image URL + alt text, description, and the "Read More" button's text and
+     link.
 4. Click **Save Changes**. The tool writes the regenerated code into Squarespace's code
    editor box and shows a brief confirmation.
 5. **You must still click Squarespace's own native Save button** to publish the change.
@@ -233,11 +229,7 @@ click Squarespace's Save.
   `jobTitle` respectively in the data JSON, for backward compatibility with the field
   names the tool has always used internally.
 - **Location** (stored as `location`) shows in the card's footer, above the divider line
-  that separates it from the logo/"Read More" row. Leave it blank to omit that line
-  entirely.
-- **Logo Image URL** (stored as `logo`) is the small round image in the card's footer —
-  point it at a hosted business/client logo. If a card predates this field (or you leave
-  it blank), the circle just shows its background color with no image.
+  that separates it from the "Read More" row. Leave it blank to omit that line entirely.
 - **Description** is inserted as raw HTML, not escaped, so `<strong>...</strong>` and
   similar inline markup survive if you type them directly into that field. Name, job
   title, business name, and image alt text are treated as plain text.
