@@ -138,7 +138,7 @@ CASE_STUDIES_DATA_END -->
   .sqs-co-card-meta { font-size: 16px; color: var(--csp-accent); font-weight: 700; text-align: center; margin: 0 0 11px; }
   .sqs-co-card-title { font-family: inherit; font-size: 14px; font-weight: 600; color: #1a1a2e; margin: 0 0 3px; }
   .sqs-co-card-jobtitle { font-size: 10px; color: #6b7280; font-weight: 500; margin-bottom: 15px; }
-  .sqs-co-card-text { font-size: 11px; color: #4b5563; line-height: 1.65; margin: 0; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+  .sqs-co-card-text { font-size: 1.1rem; color: #4b5563; line-height: 1.65; margin: 0; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
   .sqs-co-card-footer { display: flex; flex-direction: column; gap: 8px; }
   .sqs-co-card-location { font-size: 11px; color: #9ca3af; font-weight: 500; }
   .sqs-co-card-footer-row { display: flex; align-items: center; justify-content: flex-end; gap: 8px; padding-top: 12px; border-top: 1px solid #f3f4f6; }
