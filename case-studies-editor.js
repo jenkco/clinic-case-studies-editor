@@ -77,6 +77,10 @@
   var GRID_END_MARKER = 'CASE_STUDIES_GRID_END';
   var ALL_KEY = 'all';
   var DESCRIPTION_MAX_LENGTH = 230;
+  var DEFAULT_BUSINESS_NAME_SIZE = 20;
+  var DEFAULT_CLIENT_NAME_SIZE = 18;
+  var DEFAULT_ROLE_SIZE = 13;
+  var DEFAULT_DESCRIPTION_SIZE = 16;
   var DEFAULT_ACCENT = '#4A707C';
   var DEFAULT_ACCENT_HOVER = '#3a5a65';
   var STYLE_EL_ID = 'csp-injected-styles';
@@ -394,6 +398,18 @@
       );
     });
 
+    // Card text sizes are tool-owned (not left in the static CSS below) so
+    // they can be adjusted from the Global Settings panel. The static CSS
+    // for these same selectors deliberately omits font-size -- if it were
+    // set there too, it would tie in specificity with this rule and CSS
+    // resolves ties by source order, not by which one visitors "expect" to
+    // win, exactly like the default-filter bug this tool already avoids
+    // elsewhere.
+    parts.push('.sqs-co-card-meta{font-size:' + (state.businessNameFontSize || DEFAULT_BUSINESS_NAME_SIZE) + 'px;}');
+    parts.push('.sqs-co-card-title{font-size:' + (state.clientNameFontSize || DEFAULT_CLIENT_NAME_SIZE) + 'px;}');
+    parts.push('.sqs-co-card-jobtitle{font-size:' + (state.roleFontSize || DEFAULT_ROLE_SIZE) + 'px;}');
+    parts.push('.sqs-co-card-text{font-size:' + (state.descriptionFontSize || DEFAULT_DESCRIPTION_SIZE) + 'px;}');
+
     // Default filtering (desktop and mobile) is applied by wireLiveFilters()
     // at runtime (via the data-default-filter attribute on
     // .sqs-co-filter-wrapper), using the exact same .active/.hidden class
@@ -576,8 +592,29 @@
       return label;
     }
 
+    function numberField(labelText, key, defaultValue) {
+      var label = D.createElement('label');
+      label.className = 'csp-field-label';
+      label.textContent = labelText;
+      var input = D.createElement('input');
+      input.type = 'number';
+      input.min = '1';
+      input.className = 'csp-input';
+      input.style.width = '70px';
+      input.value = state[key] || defaultValue;
+      input.addEventListener('input', function () {
+        state[key] = input.value ? Number(input.value) : defaultValue;
+      });
+      label.appendChild(input);
+      return label;
+    }
+
     globalRow.appendChild(colorField('Accent Color', 'accent'));
     globalRow.appendChild(colorField('Accent Hover Color', 'accentHover'));
+    globalRow.appendChild(numberField('Business Name Size (px)', 'businessNameFontSize', DEFAULT_BUSINESS_NAME_SIZE));
+    globalRow.appendChild(numberField('Client Name Size (px)', 'clientNameFontSize', DEFAULT_CLIENT_NAME_SIZE));
+    globalRow.appendChild(numberField('Role/Title Size (px)', 'roleFontSize', DEFAULT_ROLE_SIZE));
+    globalRow.appendChild(numberField('Description Size (px)', 'descriptionFontSize', DEFAULT_DESCRIPTION_SIZE));
 
     var defaultFilterLabel = D.createElement('label');
     defaultFilterLabel.className = 'csp-field-label';

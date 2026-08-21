@@ -90,6 +90,10 @@ this block.
   "accent": "#4A707C",
   "accentHover": "#3a5a65",
   "defaultFilter": "nurse",
+  "businessNameFontSize": 20,
+  "clientNameFontSize": 18,
+  "roleFontSize": 13,
+  "descriptionFontSize": 16,
   "filters": [
     { "key": "all", "label": "All Clinics" },
     { "key": "nurse", "label": "Solo Practitioner / Nurse", "badgeLabel": "Nurse-Led Clinic", "badgeBg": "#ecfdf5", "badgeText": "#065f46" }
@@ -115,6 +119,10 @@ CASE_STUDIES_DATA_END -->
   /* CASE_STUDIES_STYLE_START */
   :root { --csp-accent: #4A707C; --csp-accent-hover: #3a5a65; }
   .sqs-co-badge[data-badge-cat="nurse"] { background: #ecfdf5; color: #065f46; }
+  .sqs-co-card-meta { font-size: 20px; }
+  .sqs-co-card-title { font-size: 18px; }
+  .sqs-co-card-jobtitle { font-size: 13px; }
+  .sqs-co-card-text { font-size: 16px; }
   /* CASE_STUDIES_STYLE_END */
 
   #sqs-clinic-outcomes-section { font-family: inherit; padding: 80px 40px; background: #ffffff; max-width: 1200px; margin: 0 auto; }
@@ -135,10 +143,10 @@ CASE_STUDIES_DATA_END -->
   .sqs-co-card:hover .sqs-co-card-image img { transform: scale(1.04); }
   .sqs-co-badge { position: absolute; top: 11px; left: 11px; padding: 3px 9px; border-radius: 100px; font-size: 8px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
   .sqs-co-card-body { padding: 18px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; gap: 15px; }
-  .sqs-co-card-meta { font-size: 16px; color: var(--csp-accent); font-weight: 700; text-align: center; margin: 0 0 11px; }
-  .sqs-co-card-title { font-family: inherit; font-size: 14px; font-weight: 600; color: #1a1a2e; margin: 0 0 3px; }
-  .sqs-co-card-jobtitle { font-size: 10px; color: #6b7280; font-weight: 500; margin-bottom: 15px; }
-  .sqs-co-card-text { font-size: 1.1rem; color: #4b5563; line-height: 1.65; margin: 0; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+  .sqs-co-card-meta { color: var(--csp-accent); font-weight: 700; text-align: center; margin: 0 0 11px; }
+  .sqs-co-card-title { font-family: inherit; font-weight: 600; color: #1a1a2e; margin: 0 0 3px; }
+  .sqs-co-card-jobtitle { color: #6b7280; font-weight: 500; margin-bottom: 15px; }
+  .sqs-co-card-text { color: #4b5563; line-height: 1.65; margin: 0; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
   .sqs-co-card-footer { display: flex; flex-direction: column; gap: 8px; }
   .sqs-co-card-location { font-size: 11px; color: #9ca3af; font-weight: 500; }
   .sqs-co-card-footer-row { display: flex; align-items: center; justify-content: flex-end; gap: 8px; padding-top: 12px; border-top: 1px solid #f3f4f6; }
@@ -207,8 +215,10 @@ Save.
    that block's code editor panel is open (a different color from the pricing tool's
    button, so you can tell them apart at a glance).
 3. Click it. A form opens with three sections:
-   - **Global Settings**: accent color, accent hover color, and which filter is shown by
-     default on page load (desktop and mobile both).
+   - **Global Settings**: accent color, accent hover color, which filter is shown by
+     default on page load (desktop and mobile both), and the font size (in px) of each
+     card's business name, client name, role/job title, and description — these apply
+     uniformly to every card, not per-card.
    - **Filter Tabs**: the "Show all" tab (label only, always first) plus your real
      categories — each with a key, a tab label, and its own badge text + colors.
    - **Case Study Cards**: one entry per card — category, name, job title, business name,
@@ -237,6 +247,13 @@ click Squarespace's Save.
   Renaming a filter's key automatically updates every card using it.
 - Deleting a filter does **not** delete cards that used it — reassign them to another
   category in the editor, or the block will fail validation on save until you do.
+- **Card text sizes** (business name, client name, role, description) are set from
+  Global Settings, in pixels, and apply to every card at once. They're tool-owned —
+  regenerated inside the `CASE_STUDIES_STYLE_START/END` markers on every save — so the
+  static CSS for `.sqs-co-card-meta`, `.sqs-co-card-title`, `.sqs-co-card-jobtitle`, and
+  `.sqs-co-card-text` deliberately has no `font-size` of its own. Don't add one by hand:
+  it would tie in specificity with the tool's rule, and CSS resolves ties by source
+  order, not by which one you meant to win.
 
 ## Manual test checklist
 
