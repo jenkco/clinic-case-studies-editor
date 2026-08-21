@@ -127,22 +127,22 @@ CASE_STUDIES_DATA_END -->
   .sqs-co-tab:hover { border-color: var(--csp-accent); color: var(--csp-accent); }
   .sqs-co-tab.active { background: var(--csp-accent); border-color: var(--csp-accent); color: #ffffff; }
   .sqs-co-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 28px; }
-  .sqs-co-card { border-radius: 16px; overflow: hidden; background: #ffffff; border: 1px solid #e5e7eb; box-shadow: 0 2px 12px rgba(0,0,0,0.06); transition: transform 0.25s ease, box-shadow 0.25s ease; display: flex; flex-direction: column; }
+  .sqs-co-card { border-radius: 12px; overflow: hidden; background: #ffffff; border: 1px solid #e5e7eb; box-shadow: 0 2px 12px rgba(0,0,0,0.06); transition: transform 0.25s ease, box-shadow 0.25s ease; display: flex; flex-direction: column; }
   .sqs-co-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.1); }
   .sqs-co-card.hidden { display: none; }
-  .sqs-co-card-image { position: relative; height: 200px; overflow: hidden; }
+  .sqs-co-card-image { position: relative; height: 150px; overflow: hidden; }
   .sqs-co-card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
   .sqs-co-card:hover .sqs-co-card-image img { transform: scale(1.04); }
-  .sqs-co-badge { position: absolute; top: 14px; left: 14px; padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
-  .sqs-co-card-body { padding: 24px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; gap: 20px; }
-  .sqs-co-card-meta { font-size: 21px; color: var(--csp-accent); font-weight: 700; text-align: center; margin: 0 0 14px; }
-  .sqs-co-card-title { font-family: inherit; font-size: 18px; font-weight: 600; color: #1a1a2e; margin: 0 0 4px; }
-  .sqs-co-card-jobtitle { font-size: 13px; color: #6b7280; font-weight: 500; margin-bottom: 20px; }
-  .sqs-co-card-text { font-size: 14px; color: #4b5563; line-height: 1.65; margin: 0; }
-  .sqs-co-card-footer { display: flex; flex-direction: column; gap: 10px; }
-  .sqs-co-card-location { font-size: 14px; color: #9ca3af; font-weight: 500; }
-  .sqs-co-card-footer-row { display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid #f3f4f6; }
-  .sqs-co-read-more { display: inline-block; padding: 8px 20px; border-radius: 100px; background: var(--csp-accent); color: #ffffff; font-family: inherit; font-size: 13px; font-weight: 600; text-decoration: none; border: none; cursor: pointer; transition: background 0.2s ease, transform 0.2s ease; }
+  .sqs-co-badge { position: absolute; top: 11px; left: 11px; padding: 3px 9px; border-radius: 100px; font-size: 8px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+  .sqs-co-card-body { padding: 18px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; gap: 15px; }
+  .sqs-co-card-meta { font-size: 16px; color: var(--csp-accent); font-weight: 700; text-align: center; margin: 0 0 11px; }
+  .sqs-co-card-title { font-family: inherit; font-size: 14px; font-weight: 600; color: #1a1a2e; margin: 0 0 3px; }
+  .sqs-co-card-jobtitle { font-size: 10px; color: #6b7280; font-weight: 500; margin-bottom: 15px; }
+  .sqs-co-card-text { font-size: 11px; color: #4b5563; line-height: 1.65; margin: 0; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+  .sqs-co-card-footer { display: flex; flex-direction: column; gap: 8px; }
+  .sqs-co-card-location { font-size: 11px; color: #9ca3af; font-weight: 500; }
+  .sqs-co-card-footer-row { display: flex; align-items: center; justify-content: flex-end; gap: 8px; padding-top: 12px; border-top: 1px solid #f3f4f6; }
+  .sqs-co-read-more { display: inline-block; padding: 6px 15px; border-radius: 100px; background: var(--csp-accent); color: #ffffff; font-family: inherit; font-size: 10px; font-weight: 600; text-decoration: none; border: none; cursor: pointer; transition: background 0.2s ease, transform 0.2s ease; }
   .sqs-co-read-more:hover { background: var(--csp-accent-hover); transform: translateY(-1px); }
   @media (max-width: 768px) {
     #sqs-clinic-outcomes-section { padding: 60px 20px; }

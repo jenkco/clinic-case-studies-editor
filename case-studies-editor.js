@@ -76,6 +76,7 @@
   var GRID_START_MARKER = 'CASE_STUDIES_GRID_START';
   var GRID_END_MARKER = 'CASE_STUDIES_GRID_END';
   var ALL_KEY = 'all';
+  var DESCRIPTION_MAX_LENGTH = 230;
   var DEFAULT_ACCENT = '#4A707C';
   var DEFAULT_ACCENT_HOVER = '#3a5a65';
   var STYLE_EL_ID = 'csp-injected-styles';
@@ -895,9 +896,10 @@
 
       var descLabel = D.createElement('label');
       descLabel.className = 'csp-field-label csp-full';
-      descLabel.textContent = 'Description (HTML like <strong> is preserved)';
+      descLabel.textContent = 'Description (HTML like <strong> is preserved, max 230 characters)';
       var descInput = D.createElement('input');
       descInput.type = 'text';
+      descInput.maxLength = DESCRIPTION_MAX_LENGTH;
       descInput.className = 'csp-input csp-input--wide';
       descInput.value = c.description;
       descInput.addEventListener('input', function () {
