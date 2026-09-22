@@ -141,7 +141,7 @@ CASE_STUDIES_DATA_END -->
   .sqs-co-card-image { position: relative; height: 150px; overflow: hidden; }
   .sqs-co-card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
   .sqs-co-card:hover .sqs-co-card-image img { transform: scale(1.04); }
-  .sqs-co-badge { position: absolute; top: 11px; left: 11px; padding: 3px 9px; border-radius: 100px; font-size: 8px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+  .sqs-co-badge { position: absolute; bottom: 11px; left: 11px; padding: 3px 9px; border-radius: 100px; font-size: 8px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
   .sqs-co-card-body { padding: 18px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; gap: 15px; }
   .sqs-co-card-meta { color: var(--csp-accent); font-weight: 700; text-align: center; margin: 0 0 11px; }
   .sqs-co-card-title { font-family: inherit; font-weight: 600; color: #1a1a2e; margin: 0 0 3px; }
