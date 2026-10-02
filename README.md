@@ -245,6 +245,13 @@ click Squarespace's Save.
   title, business name, and image alt text are treated as plain text.
 - **Category** must match one of your filter keys (the dropdown only offers valid ones).
   Renaming a filter's key automatically updates every card using it.
+- **Shown on page / Hidden (draft)** (stored as `visible`, default on) is a per-card switch
+  in the editor. A hidden card stays in the saved data JSON, dimmed in the editor, but is
+  left out of the visible grid markup entirely — so you can publish with the material you
+  have and switch cards on as content is ready. Hidden cards may be unfinished (no title
+  needed); cards added with "+ Add Card" start hidden. If every card in a category is
+  hidden, that category's tab still shows but is empty — hide or rename the tab if that
+  matters.
 - Deleting a filter does **not** delete cards that used it — reassign them to another
   category in the editor, or the block will fail validation on save until you do.
 - **Card text sizes** (business name, client name, role, description) are set from

@@ -350,6 +350,10 @@
 
     parts.push('<div class="sqs-co-grid">');
     state.cards.forEach(function (card) {
+      // A card switched off in the editor stays in the data JSON (so it can be
+      // switched back on later) but is left out of the visible grid markup.
+      // Missing flag = on, so data saved before this field existed is unchanged.
+      if (card.visible === false) return;
       var filter = filterByKey(state, card.category) || {};
       parts.push('<div class="sqs-co-card" data-category="' + escapeHtml(card.category) + '">');
       parts.push('<div class="sqs-co-card-image">');
@@ -845,7 +849,9 @@
         location: '',
         description: '',
         linkText: 'Read More',
-        linkUrl: '#'
+        linkUrl: '#',
+        // New cards start as hidden drafts so a half-written card never goes live by accident.
+        visible: false
       });
       renderCards();
     });
@@ -873,6 +879,25 @@
       var headerTitle = D.createElement('div');
       headerTitle.className = 'csp-card-card__header-title';
       headerTitle.textContent = 'Card ' + (idx + 1);
+
+      var showLabel = D.createElement('label');
+      showLabel.style.cssText = 'display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#374151;cursor:pointer;margin-left:auto;margin-right:12px;';
+      var showCheckbox = D.createElement('input');
+      showCheckbox.type = 'checkbox';
+      showCheckbox.checked = c.visible !== false;
+      var showText = D.createElement('span');
+      function syncVisibleState() {
+        var on = c.visible !== false;
+        showText.textContent = on ? 'Shown on page' : 'Hidden (draft)';
+        card.style.opacity = on ? '' : '0.55';
+      }
+      showCheckbox.addEventListener('change', function () {
+        c.visible = showCheckbox.checked;
+        syncVisibleState();
+      });
+      showLabel.appendChild(showCheckbox);
+      showLabel.appendChild(showText);
+
       var deleteBtn = D.createElement('button');
       deleteBtn.type = 'button';
       deleteBtn.className = 'csp-icon-btn csp-icon-btn--danger';
@@ -883,8 +908,10 @@
         renderCards();
       });
       headerRow.appendChild(headerTitle);
+      headerRow.appendChild(showLabel);
       headerRow.appendChild(deleteBtn);
       card.appendChild(headerRow);
+      syncVisibleState();
 
       var grid = D.createElement('div');
       grid.className = 'csp-grid-3';
@@ -1036,7 +1063,8 @@
     }
 
     state.cards.forEach(function (c, idx) {
-      if (!c.title || !c.title.trim()) {
+      // Hidden (draft) cards may be unfinished, so only live cards need a title.
+      if (c.visible !== false && (!c.title || !c.title.trim())) {
         errors.push('Card ' + (idx + 1) + ' needs a title.');
       }
       if (!filterByKey(state, c.category) || c.category === ALL_KEY) {
