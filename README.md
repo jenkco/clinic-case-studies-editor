@@ -245,6 +245,11 @@ click Squarespace's Save.
   title, business name, and image alt text are treated as plain text.
 - **Category** must match one of your filter keys (the dropdown only offers valid ones).
   Renaming a filter's key automatically updates every card using it.
+- **Default filters**: *Default Filter (Mobile)* (`defaultFilter`, screens up to 768px wide)
+  must be a real category. *Default Filter (Desktop)* (`desktopDefaultFilter`, optional) can
+  be "Show all" or any category, and falls back to the mobile one if left as "Same as
+  mobile". On the page this is the `data-default-filter-desktop` attribute next to
+  `data-default-filter`, read once at load and applied through the same function as a click.
 - **Shown on page / Hidden (draft)** (stored as `visible`, default on) is a per-card switch
   in the editor. A hidden card stays in the saved data JSON, dimmed in the editor, but is
   left out of the visible grid markup entirely — so you can publish with the material you

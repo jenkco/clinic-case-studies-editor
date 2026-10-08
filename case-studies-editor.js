@@ -170,6 +170,11 @@
     // that can have .active.)
     var wrapper = doc.querySelector('.sqs-co-filter-wrapper');
     var defaultFilter = wrapper ? wrapper.getAttribute('data-default-filter') : null;
+    // Optional separate default for wider screens (e.g. "all" on desktop while
+    // phones start on one category). Falls back to the main default.
+    var desktopDefault = wrapper ? wrapper.getAttribute('data-default-filter-desktop') : null;
+    var isMobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+    if (desktopDefault && !isMobile) defaultFilter = desktopDefault;
     if (defaultFilter && wrapper.getAttribute('data-csp-default-applied') !== 'true') {
       wrapper.setAttribute('data-csp-default-applied', 'true');
       applyFilter(defaultFilter);
@@ -340,7 +345,11 @@
     // load, on every screen size -- read once at page load, not baked into
     // CSS, so there is only one code path that can ever mark a tab
     // "selected".
-    parts.push('<div class="sqs-co-filter-wrapper" data-default-filter="' + escapeHtml(state.defaultFilter) + '">');
+    parts.push(
+      '<div class="sqs-co-filter-wrapper" data-default-filter="' + escapeHtml(state.defaultFilter) + '"' +
+        (state.desktopDefaultFilter ? ' data-default-filter-desktop="' + escapeHtml(state.desktopDefaultFilter) + '"' : '') +
+        '>'
+    );
     state.filters.forEach(function (f) {
       parts.push(
         '<button class="sqs-co-tab" data-filter="' + escapeHtml(f.key) + '">' + escapeHtml(f.label) + '</button>'
@@ -622,7 +631,7 @@
 
     var defaultFilterLabel = D.createElement('label');
     defaultFilterLabel.className = 'csp-field-label';
-    defaultFilterLabel.textContent = 'Default Filter (Desktop & Mobile)';
+    defaultFilterLabel.textContent = 'Default Filter (Mobile)';
     var defaultFilterSelect = D.createElement('select');
     defaultFilterSelect.className = 'csp-select';
     function renderDefaultFilterOptions() {
@@ -643,6 +652,33 @@
     });
     defaultFilterLabel.appendChild(defaultFilterSelect);
     globalRow.appendChild(defaultFilterLabel);
+
+    var desktopFilterLabel = D.createElement('label');
+    desktopFilterLabel.className = 'csp-field-label';
+    desktopFilterLabel.textContent = 'Default Filter (Desktop)';
+    var desktopFilterSelect = D.createElement('select');
+    desktopFilterSelect.className = 'csp-select';
+    function renderDesktopFilterOptions() {
+      desktopFilterSelect.innerHTML = '';
+      var same = D.createElement('option');
+      same.value = '';
+      same.textContent = 'Same as mobile';
+      desktopFilterSelect.appendChild(same);
+      state.filters.forEach(function (f) {
+        var opt = D.createElement('option');
+        opt.value = f.key;
+        opt.textContent = f.key === ALL_KEY ? 'Show all' : f.label;
+        if (f.key === state.desktopDefaultFilter) opt.selected = true;
+        desktopFilterSelect.appendChild(opt);
+      });
+    }
+    renderDesktopFilterOptions();
+    desktopFilterSelect.addEventListener('change', function () {
+      if (desktopFilterSelect.value) state.desktopDefaultFilter = desktopFilterSelect.value;
+      else delete state.desktopDefaultFilter;
+    });
+    desktopFilterLabel.appendChild(desktopFilterSelect);
+    globalRow.appendChild(desktopFilterLabel);
 
     globalSection.appendChild(globalRow);
     body.appendChild(globalSection);
@@ -690,6 +726,7 @@
         filtersWrap.appendChild(renderFilterCard(f, idx));
       });
       renderDefaultFilterOptions();
+      renderDesktopFilterOptions();
       renderCards();
     }
 
@@ -736,6 +773,7 @@
           if (c.category === oldKey) c.category = f.key;
         });
         if (state.defaultFilter === oldKey) state.defaultFilter = f.key;
+        if (state.desktopDefaultFilter === oldKey) state.desktopDefaultFilter = f.key;
       });
       keyLabel.appendChild(keyInput);
       grid.appendChild(keyLabel);
@@ -1060,6 +1098,10 @@
 
     if (!filterByKey(state, state.defaultFilter) || state.defaultFilter === ALL_KEY) {
       errors.push('Default filter must reference one of the real filters (not "Show all").');
+    }
+
+    if (state.desktopDefaultFilter && !filterByKey(state, state.desktopDefaultFilter)) {
+      errors.push('Desktop default filter must reference an existing filter.');
     }
 
     state.cards.forEach(function (c, idx) {
